@@ -1,3 +1,4 @@
+import { GITHUB_OWNER_SLUG_RE } from '../../shared/github/owner-slug'
 import type { GitHubOwnerRepo } from '../../shared/github/pull-request-types'
 
 export type GitHubApiRepositoryResolution =
@@ -6,9 +7,8 @@ export type GitHubApiRepositoryResolution =
   | undefined
   | (() => Promise<GitHubOwnerRepo | null>)
 
-// Why: renderer/RPC overrides reach authenticated REST paths. `_` is allowed after
-// the first character because Enterprise Managed User logins end in `_<shortcode>`.
-const OWNER_SLUG_RE = /^[A-Za-z0-9][A-Za-z0-9_-]*$/
+// Why: renderer/RPC overrides reach authenticated REST paths.
+const OWNER_SLUG_RE = GITHUB_OWNER_SLUG_RE
 const REPOSITORY_SLUG_RE = /^[A-Za-z0-9._-]+$/
 
 export function isValidGitHubApiRepository(repository: GitHubOwnerRepo): boolean {
