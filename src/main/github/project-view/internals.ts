@@ -60,12 +60,14 @@ export async function projectHostAuthenticationError(
 
 // ─── Slug validation ──────────────────────────────────────────────────
 
-// Why: GitHub usernames/org logins disallow `_`, `.`, leading `-`. Repo names
-// are looser — they allow leading `_`, `.`, `-` (`.` and `..` reserved). We
-// validate each separately so untrusted Project row data (`nameWithOwner`)
-// can't become an arbitrary REST path while still accepting realistic repo
-// names like `_internal` or `.github`.
-const OWNER_SLUG_RE = /^[A-Za-z0-9][A-Za-z0-9-]*$/
+// Why: GitHub usernames/org logins disallow `.` and a leading `-`/`_`. Plain
+// accounts never contain `_`, but Enterprise Managed User logins do — GitHub
+// appends `_<shortcode>` to the IdP username (`octocat_acme`), so `_` is
+// valid after the first character. Repo names are looser — they allow leading
+// `_`, `.`, `-` (`.` and `..` reserved). We validate each separately so
+// untrusted Project row data (`nameWithOwner`) can't become an arbitrary REST
+// path while still accepting realistic repo names like `_internal` or `.github`.
+const OWNER_SLUG_RE = /^[A-Za-z0-9][A-Za-z0-9_-]*$/
 const REPO_SLUG_RE = /^[A-Za-z0-9._-]+$/
 const REPO_SLUG_RESERVED = new Set(['.', '..'])
 
