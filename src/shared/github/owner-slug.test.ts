@@ -15,7 +15,19 @@ describe('GitHub owner slug alphabet', () => {
   })
 
   it('rejects a leading underscore, hyphen or dot, and path-shaped values', () => {
-    for (const owner of ['_acme', '-acme', '.acme', 'a/b', 'a.b', '']) {
+    for (const owner of [
+      '_acme',
+      '-acme',
+      '.acme',
+      'a/b',
+      'a.b',
+      'a_b/c',
+      'a_b\\c',
+      'a_b%2Fc',
+      'a_b?c',
+      'a_b#c',
+      ''
+    ]) {
       expect(GITHUB_OWNER_SLUG_RE.test(owner)).toBe(false)
       expect(isGitHubOwnerSlug(owner)).toBe(false)
     }
