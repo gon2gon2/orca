@@ -37,9 +37,11 @@ export function normalizeGitUsername(value: string): string {
  */
 export function isPlausibleHostedLogin(value: string): boolean {
   // GitHub usernames: 1–39 chars, alphanumerics and single hyphens, no leading/trailing hyphen.
+  // Enterprise Managed Users carry a `_<shortcode>` suffix (e.g. `octocat_acme`), so `_` is
+  // allowed after the first character — the same alphabet as src/shared/github/owner-slug.ts.
   return (
     /^[A-Za-z0-9]$/.test(value) ||
-    (/^[A-Za-z0-9][A-Za-z0-9-]{0,37}[A-Za-z0-9]$/.test(value) && !value.includes('--'))
+    (/^[A-Za-z0-9][A-Za-z0-9_-]{0,37}[A-Za-z0-9]$/.test(value) && !value.includes('--'))
   )
 }
 
@@ -158,7 +160,7 @@ function parseGhAuthStatusLogin(output: string): string {
   let currentLogin = ''
   let firstLogin = ''
   for (const line of output.split('\n')) {
-    const login = line.match(/Logged in to github\.com account\s+([A-Za-z0-9-]+)/)?.[1]
+    const login = line.match(/Logged in to github\.com account\s+([A-Za-z0-9][A-Za-z0-9_-]*)/)?.[1]
     if (login) {
       currentLogin = login
       if (!firstLogin) {
